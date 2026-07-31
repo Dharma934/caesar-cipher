@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Caesar Cipher</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Courier New", monospace;
+        background:
+            radial-gradient(circle at top, #1a1a1a 0%, #080808 45%, #000000 100%);
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 15px;
+    }
+
+    /* Main cybersecurity terminal box */
+    .container {
+        width: 100%;
+        max-width: 750px;
+        background: #0b0b0b;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow:
+            0 0 25px rgba(255, 255, 255, 0.08),
+            0 0 60px rgba(0, 0, 0, 0.8);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Top terminal line */
+    .container::before {
+        content: "●  ●  ●    TERMINAL // CAESAR-CIPHER";
+        display: block;
+        color: #777;
+        font-size: 12px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #292929;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    /* Title */
+    h1 {
+        text-align: center;
+        margin: 5px 0 8px;
+        font-size: 42px;
+        letter-spacing: 4px;
+        color: #ffffff;
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+    }
+
+    /* Small subtitle */
+    h1::after {
+        content: " // TEXT ENCRYPTION TOOL";
+        display: block;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: #666;
+        margin-top: 10px;
+        font-weight: normal;
+    }
+
+    label {
+        display: block;
+        margin-top: 22px;
+        margin-bottom: 8px;
+        color: #aaa;
+        font-size: 13px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* Input fields */
+    textarea,
+    input {
+        width: 100%;
+        padding: 14px;
+        background: #050505;
+        color: #ffffff;
+        border: 1px solid #333;
+        border-radius: 6px;
+        font-family: "Courier New", monospace;
+        font-size: 15px;
+        outline: none;
+        transition: 0.25s;
+    }
+
+    textarea {
+        height: 150px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    textarea::placeholder,
+    input::placeholder {
+        color: #555;
+    }
+
+    textarea:focus,
+    input:focus {
+        border-color: #888;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+    }
+
+    /* Buttons */
+    .buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    button {
+        flex: 1;
+        padding: 14px;
+        background: #111;
+        color: #ffffff;
+        border: 1px solid #444;
+        border-radius: 6px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    button:hover {
+        background: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
+        box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    /* Result area */
+    .result {
+        margin-top: 25px;
+        min-height: 80px;
+        padding: 18px;
+        background: #050505;
+        border: 1px solid #292929;
+        border-left: 3px solid #888;
+        border-radius: 6px;
+        color: #ffffff;
+        word-wrap: break-word;
+        line-height: 1.6;
+        font-size: 15px;
+    }
+
+    /* Result label */
+    .result::before {
+        content: "OUTPUT";
+        display: block;
+        color: #666;
+        font-size: 11px;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    /* Explanation section */
+    .explanation {
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 1px solid #292929;
+    }
+
+    .explanation h2 {
+        color: #ffffff;
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .explanation h2::before {
+        content: "> ";
+        color: #777;
+    }
+
+    .explanation p {
+        color: #999;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .explanation strong {
+        color: #ffffff;
+    }
+
+    /* Error message */
+    .error {
+        color: #ff6666;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+
+        body {
+            padding: 15px;
+            align-items: flex-start;
+        }
+
+        .container {
+            margin-top: 15px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 30px;
+            letter-spacing: 2px;
+        }
+
+        h1::after {
+            font-size: 9px;
+        }
+
+        .buttons {
+            flex-direction: column;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Caesar Cipher</h1>
+
+        <!-- Message input -->
+        <label for="message">Enter Message:</label>
+        <textarea id="message" placeholder="Enter your message here..."></textarea>
+
+        <!-- Shift input -->
+        <label for="shift">Enter Shift Value:</label>
+        <input type="number" id="shift" placeholder="Example: 3">
+
+        <!-- Encrypt and Decrypt buttons -->
+        <div class="buttons">
+            <button onclick="encryptMessage()">Encrypt</button>
+            <button onclick="decryptMessage()">Decrypt</button>
+        </div>
+
+        <!-- Output area -->
+        <div class="result" id="result">
+            Result will appear here...
+        </div>
+
+        <!-- Explanation -->
+        <div class="explanation">
+            <h2>How Does the Caesar Cipher Work?</h2>
+
+            <p>
+                The Caesar Cipher is a simple encryption technique that
+                shifts each letter in a message by a fixed number of positions
+                in the alphabet.
+            </p>
+
+            <p>
+                For example, with a shift of <strong>3</strong>:
+            </p>
+
+            <p>
+                A → D, B → E, C → F
+            </p>
+
+            <p>
+                The alphabet wraps around when it reaches the end:
+            </p>
+
+            <p>
+                X → A, Y → B, Z → C
+            </p>
+
+            <p>
+                Spaces, numbers, and special characters are not changed.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+
+        /*
+         * Caesar Cipher Function
+         *
+         * message = the text entered by the user
+         * shift   = number of positions to move
+         *
+         * For encryption:
+         *   Positive shift moves letters forward.
+         *
+         * For decryption:
+         *   Negative shift moves letters backward.
+         */
+        function caesarCipher(message, shift) {
+
+            let result = "";
+
+            // Loop through every character in the message
+            for (let i = 0; i < message.length; i++) {
+
+                let character = message[i];
+                let code = message.charCodeAt(i);
+
+                // Check if the character is an uppercase letter (A-Z)
+                if (code >= 65 && code <= 90) {
+
+                    /*
+                     * Convert A-Z to numbers 0-25,
+                     * apply the shift,
+                     * then convert back to A-Z.
+                     *
+                     * The +26 and %26 make the alphabet wrap around.
+                     */
+                    let newCode = ((code - 65 + shift) % 26 + 26) % 26;
+
+                    result += String.fromCharCode(newCode + 65);
+                }
+
+                // Check if the character is a lowercase letter (a-z)
+                else if (code >= 97 && code <= 122) {
+
+                    /*
+                     * Convert a-z to numbers 0-25,
+                     * apply the shift,
+                     * then convert back to a-z.
+                     */
+                    let newCode = ((code - 97 + shift) % 26 + 26) % 26;
+
+                    result += String.fromCharCode(newCode + 97);
+                }
+
+                // Keep spaces, numbers, and special characters unchanged
+                else {
+                    result += character;
+                }
+            }
+
+            return result;
+        }
+
+
+        // Encrypt the message
+        function encryptMessage() {
+
+            let message = document.getElementById("message").value;
+            let shiftInput = document.getElementById("shift").value;
+            let result = document.getElementById("result");
+
+            // Basic validation
+            if (message.trim() === "") {
+                result.innerHTML = '<span class="error">Please enter a message.</span>';
+                return;
+            }
+
+            if (shiftInput === "") {
+                result.innerHTML = '<span class="error">Please enter a shift value.</span>';
+                return;
+            }
+
+            let shift = Number(shiftInput);
+
+            // Encrypt using a positive shift
+            result.textContent = caesarCipher(message, shift);
+        }
+
+
+        // Decrypt the message
+        function decryptMessage() {
+
+            let message = document.getElementById("message").value;
+            let shiftInput = document.getElementById("shift").value;
+            let result = document.getElementById("result");
+
+            // Basic validation
+            if (message.trim() === "") {
+                result.innerHTML = '<span class="error">Please enter a message.</span>';
+                return;
+            }
+
+            if (shiftInput === "") {
+                result.innerHTML = '<span class="error">Please enter a shift value.</span>';
+                return;
+            }
+
+            let shift = Number(shiftInput);
+
+            // Decrypt using a negative shift
+            result.textContent = caesarCipher(message, -shift);
+        }
+
+    </script>
+
+</body>
+</html>
